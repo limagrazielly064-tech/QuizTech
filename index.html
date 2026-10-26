@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Tech - Ranking Unificado</title>
-    <!-- Bibliotecas do Firebase v8 -->
+    <!-- Bibliotecas corretas do Firebase v8 (NÃO usar 'import') -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
@@ -95,15 +95,13 @@
     </div>
 
     <script>
-        // ==========================================
-        // CONFIGURAÇÃO DO FIREBASE (Corrigida para v8)
-        // ==========================================
+        // CONFIGURAÇÃO DO FIREBASE (Corrigida sem 'import' e com o ID certo)
         const firebaseConfig = {
             apiKey: "AIzaSyDIDK0c2lpq4FDmd2NFc3AXvBFWpfMvbIw",
-            authDomain: "quiztech-2a90f.firebaseapp.com",
-            databaseURL: "https://quiztech-2a90f-default-rtdb.firebaseio.com",
-            projectId: "quiztech-2a90f",
-            storageBucket: "quiztech-2a90f.firebasestorage.app",
+            authDomain: "quiztech-2a98f.firebaseapp.com",
+            databaseURL: "https://quiztech-2a98f-default-rtdb.firebaseio.com",
+            projectId: "quiztech-2a98f",
+            storageBucket: "quiztech-2a98f.appspot.com", // atualizado do seu print
             messagingSenderId: "580501924410",
             appId: "1:580501924410:web:3651ad068aebe32cc66303"
         };
@@ -111,7 +109,6 @@
         // Inicializa o Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        // ==========================================
 
         const questions = [
             {
