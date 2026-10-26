@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Tech - Apresentação</title>
+    <style>
+        :root { --primary: #3b82f6; --bg-color: #f8fafc; --text-main: #0f172a; --card-bg: #ffffff; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        .slide-container { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .slide { display: none; background: var(--card-bg); width: 100%; max-width: 900px; padding: 50px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); animation: fadeIn 0.4s; }
+        .slide.active { display: block; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        
+        h1 { color: var(--primary); font-size: 42px; margin-bottom: 20px; text-align: center; }
+        h2 { color: var(--primary); font-size: 32px; margin-bottom: 24px; border-bottom: 3px solid #e2e8f0; padding-bottom: 10px; }
+        ul { font-size: 24px; line-height: 1.6; margin-left: 30px; margin-bottom: 20px; }
+        li { margin-bottom: 15px; }
+        .alert-box { background-color: #fee2e2; border-left: 5px solid #ef4444; padding: 15px 20px; font-size: 22px; border-radius: 4px; margin-top: 20px; }
+        .success-box { background-color: #d1fae5; border-left: 5px solid #10b981; padding: 15px 20px; font-size: 22px; border-radius: 4px; margin-top: 20px; }
+        
+        .controls { display: flex; justify-content: space-between; padding: 20px 50px; background: #fff; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
+        button { padding: 15px 30px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; border-radius: 8px; background: var(--primary); color: white; transition: 0.2s; }
+        button:hover { background: #2563eb; }
+        button:disabled { background: #cbd5e1; cursor: not-allowed; }
+        
+        @media (max-width: 768px) {
+            .slide { padding: 30px 20px; }
+            h1 { font-size: 30px; } h2 { font-size: 24px; } ul, .alert-box, .success-box { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slide-container">
+        
+        <!-- Slide 1 -->
+        <div class="slide active">
+            <h1>🛡️ Projeto Quiz Tech</h1>
+            <p style="text-align:center; font-size:24px; color:#475569;">Cidadania e Segurança Digital para o Dia a Dia</p>
+            <p style="text-align:center; font-size:20px; color:#64748b; margin-top:40px;">Projeto de Extensão - ADS</p>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide">
+            <h2>🔑 1. Senhas e Proteção de Contas</h2>
+            <ul>
+                <li><b>Senhas Fortes:</b> Nunca use datas de nascimento ou nomes de filhos. Uma senha segura mistura letras (maiúsculas e minúsculas), números e símbolos (ex: @, #, !).</li>
+                <li><b>Verificação em Duas Etapas (2FA):</b> É uma camada extra de segurança. No WhatsApp, é aquele "PIN" de 6 dígitos que o aplicativo pede de vez em quando. Isso impede que clorem seu número!</li>
+            </ul>
+            <div class="success-box"><b>Dica de Ouro:</b> Ative a verificação em duas etapas hoje mesmo no seu WhatsApp e Instagram!</div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide">
+            <h2>🎣 2. Phishing: A Pescaria de Dados</h2>
+            <ul>
+                <li><b>Golpes por SMS/WhatsApp:</b> Recebeu mensagem dizendo "Seu CPF foi bloqueado, pague R$ 50 via PIX"? Ignore e não clique. Órgãos oficiais não cobram taxas por SMS.</li>
+                <li><b>Anexos Suspeitos:</b> E-mail dizendo "Sua Fatura Venceu" de uma loja que você não comprou? Não baixe o arquivo! Pode ser um vírus (malware) para roubar seus dados.</li>
+                <li><b>Compras Seguras:</b> Vai comprar online? Olhe o endereço do site: deve ter um cadeado fechado e começar com <b>https://</b>. Desconfie de promoções "boas demais para ser verdade".</li>
+            </ul>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide">
+            <h2>📱 3. Redes Sociais e Wi-Fi Público</h2>
+            <ul>
+                <li><b>Exposição Excessiva:</b> Vai viajar e deixar a casa vazia por 10 dias? Não poste em modo público no aeroporto! Poste as fotos só quando voltar, ou limite apenas para amigos íntimos. Criminosos monitoram as redes.</li>
+                <li><b>Wi-Fi Público:</b> Internet grátis no shopping ou na praça é ótimo, mas <b>NUNCA</b> acesse o aplicativo do seu banco ou faça compras usando essas redes. Elas podem ser interceptadas facilmente por golpistas.</li>
+            </ul>
+            <div class="alert-box">Deixe para pagar contas apenas usando o 4G/5G do seu celular ou o Wi-Fi da sua casa.</div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide">
+            <h2>📰 4. Fake News (Notícias Falsas)</h2>
+            <ul>
+                <li>Notícias falsas apelam para a nossa emoção (medo, raiva ou esperança).</li>
+                <li>Exemplo: "Chá milagroso cura doença grave em 1 dia".</li>
+                <li><b>O que fazer?</b> Nunca compartilhe na hora. Abra o Google e pesquise se sites confiáveis de notícias (jornais grandes) estão falando sobre isso. Na dúvida, não repasse.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide">
+            <h2>🤖 5. Inteligência Artificial (Ameaças e Uso)</h2>
+            <ul>
+                <li><b>O Perigo (Deepfake):</b> A IA já consegue clonar rostos e vozes perfeitamente. Se receber um áudio de um político ou famoso falando algo absurdo, desconfie. Pode ser um áudio gerado por computador.</li>
+                <li><b>A Aliada:</b> A IA é ótima para resumir textos, dar ideias e ajudar nos estudos. Porém, use com <b>senso crítico</b>! A IA pode errar ou inventar fatos (alucinações). Nunca copie e cole um texto escolar sem ler e revisar.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 7 -->
+        <div class="slide">
+            <h1>🎮 Hora do Desafio!</h1>
+            <p style="text-align:center; font-size:26px;">Peguem seus celulares e acessem o link do Quiz.</p>
+            <p style="text-align:center; font-size:22px; margin-top:20px; color:#475569;">Vamos ver quem prestou atenção e vai liderar o ranking da turma!</p>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btn-prev" onclick="mudarSlide(-1)" disabled>Anterior</button>
+        <button id="btn-next" onclick="mudarSlide(1)">Próximo</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        
+        function mudarSlide(direcao) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide += direcao;
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('btn-prev').disabled = currentSlide === 0;
+            document.getElementById('btn-next').disabled = currentSlide === slides.length - 1;
+        }
+    </script>
+</body>
+</html>
