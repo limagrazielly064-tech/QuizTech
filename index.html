@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Tech - Sistema Web com Ranking</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --bg-color: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --success: #10b981;
+            --error: #ef4444;
+            --card-bg: #ffffff;
+            --gold: #fbbf24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .intro-text, .result-text {
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .input-name {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-name:focus { border-color: var(--primary); }
+
+        .btn-primary, .btn-secondary, .btn-danger {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+        .btn-primary { background-color: var(--primary); }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        
+        .btn-secondary { background-color: var(--text-muted); }
+        .btn-secondary:hover { background-color: var(--text-main); }
+
+        .btn-danger { background-color: transparent; color: var(--error); border: 2px solid var(--error); padding: 12px; margin-top: 20px; }
+        .btn-danger:hover { background-color: #fee2e2; }
+
+        .question-status { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; }
+        .question-title { font-size: 18px; margin-bottom: 20px; line-height: 1.4; }
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .option-btn {
+            padding: 16px; background-color: var(--bg-color); border: 2px solid transparent; border-radius: 8px;
+            font-size: 15px; color: var(--text-main); text-align: left; cursor: pointer; transition: all 0.2s;
+        }
+        .option-btn:hover:not(:disabled) { background-color: #e2e8f0; }
+        .option-btn:disabled { cursor: default; }
+        .option-btn.correct { background-color: #d1fae5; border-color: var(--success); }
+        .option-btn.wrong { background-color: #fee2e2; border-color: var(--error); }
+
+        .feedback-box { margin-top: 20px; padding: 16px; border-radius: 8px; display: none; }
+        .feedback-box.active { display: block; animation: fadeIn 0.3s ease; }
+        .feedback-box.success { background-color: #d1fae5; color: #065f46; border-left: 4px solid var(--success); }
+        .feedback-box.error { background-color: #fee2e2; color: #991b1b; border-left: 4px solid var(--error); }
+        
+        .feedback-title { font-weight: bold; margin-bottom: 8px; }
+        .feedback-text { font-size: 14px; line-height: 1.4; }
+        .btn-next { margin-top: 20px; display: none; }
+        
+        .score-display { font-size: 48px; font-weight: bold; color: var(--primary); margin: 20px 0; }
+
+        .ranking-list {
+            list-style: none;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background-color: var(--bg-color);
+            margin-bottom: 8px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .ranking-item:nth-child(1) { background-color: #fef3c7; border-left: 4px solid var(--gold); }
+        .ranking-item:nth-child(2) { background-color: #f1f5f9; border-left: 4px solid #94a3b8; }
+        .ranking-item:nth-child(3) { background-color: #fff7ed; border-left: 4px solid #fb923c; }
+        .rank-name { font-weight: bold; }
+        .rank-score { color: var(--primary); font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>Quiz Tech</h1>
+        </header>
+
+        <!-- TELA 1: Início -->
+        <div id="start-screen" class="screen active">
+            <h2 style="text-align:center; margin-bottom:12px;">Vamos testar?</h2>
+            <p class="intro-text">Responda as 8 questões sobre Segurança Digital, Redes Sociais e Inteligência Artificial.</p>
+            
+            <input type="text" id="player-name" class="input-name" placeholder="Digite seu nome para o ranking" autocomplete="off" maxlength="30">
+            
+            <button class="btn-primary" onclick="startQuiz()">Começar Quiz</button>
+            <button class="btn-secondary" onclick="showRankingScreen()">Ver Ranking da Turma</button>
+        </div>
+
+        <!-- TELA 2: Perguntas -->
+        <div id="quiz-screen" class="screen">
+            <div class="question-status">Pergunta <span id="current-question">1</span> de <span id="total-questions">8</span></div>
+            <h2 class="question-title" id="question-text">Texto da pergunta?</h2>
+            
+            <div class="options-list" id="options-container"></div>
+
+            <div class="feedback-box" id="feedback-container">
+                <div class="feedback-title" id="feedback-title">Correto!</div>
+                <div class="feedback-text" id="feedback-text">Explicação aqui...</div>
+            </div>
+
+            <button class="btn-primary btn-next" id="next-btn" onclick="nextQuestion()">Próxima Pergunta</button>
+        </div>
+
+        <!-- TELA 3: Resultado -->
+        <div id="result-screen" class="screen">
+            <h2 style="text-align:center; margin-bottom:8px;">Fim do Quiz!</h2>
+            <div class="result-text" style="text-align:center;">
+                <p>Muito bem, <span id="display-player-name" style="font-weight:bold;"></span>! Sua pontuação foi:</p>
+                <div class="score-display"><span id="score">0</span>/<span id="final-total">8</span></div>
+                <p id="score-message">Parabéns por completar o desafio!</p>
+            </div>
+            <button class="btn-primary" onclick="showRankingScreen()">Ver Ranking</button>
+            <button class="btn-secondary" onclick="restartQuiz()">Novo Jogador</button>
+        </div>
+
+        <!-- TELA 4: Ranking -->
+        <div id="ranking-screen" class="screen">
+            <h2 style="text-align:center; margin-bottom:20px;">🏆 Ranking da Turma</h2>
+            <ul class="ranking-list" id="ranking-list-container"></ul>
+            <button class="btn-primary" onclick="restartQuiz()">Voltar ao Início</button>
+            <button class="btn-danger" onclick="clearRanking()">Limpar Ranking (Apenas Professores)</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Qual das opções abaixo é a senha MAIS segura para criar em uma rede social?",
+                options: [
+                    "Sua data de nascimento (ex: 15031990).",
+                    "A palavra 'senha123'.",
+                    "Mistura de letras, números e símbolos (ex: #CachorroAzul99!).",
+                    "O nome do seu filho ou animal de estimação."
+                ],
+                correctAnswer: 2,
+                explanation: "Senhas longas com mistura de caracteres são extremamente difíceis de serem adivinhadas por golpistas ou robôs."
+            },
+            {
+                question: "Você recebe um SMS: 'Seu CPF foi bloqueado! Pague R$ 50 via PIX neste link'. O que fazer?",
+                options: [
+                    "Clicar no link imediatamente e pagar.",
+                    "Ignorar, apagar a mensagem e não clicar no link.",
+                    "Encaminhar para todos os amigos para alertá-los enviando o link.",
+                    "Responder o SMS com seus dados bancários para comprovar que é você."
+                ],
+                correctAnswer: 1,
+                explanation: "Isso é um golpe de 'Phishing' (pescaria de dados). Órgãos oficiais não cobram taxas por links via SMS para desbloquear documentos."
+            },
+            {
+                question: "Você viu uma notícia dizendo que um chá cura uma doença grave em 1 dia. O que fazer antes de repassar?",
+                options: [
+                    "Compartilhar nos grupos, pois pode ajudar alguém.",
+                    "Pesquisar em sites confiáveis de notícias e saúde antes de acreditar.",
+                    "Tomar o chá imediatamente sem consultar um médico.",
+                    "Acreditar cegamente se quem enviou foi um parente de confiança."
+                ],
+                correctAnswer: 1,
+                explanation: "Notícias falsas (Fake News) apelam para emoções e curas milagrosas. Verifique sempre em sites jornalísticos e fontes oficiais."
+            },
+            {
+                question: "Como você deve usar a Inteligência Artificial (IA) no dia a dia?",
+                options: [
+                    "Acreditar 100% no que ela diz, pois robôs nunca erram.",
+                    "Usar como um auxílio, sempre revisando as respostas com senso crítico.",
+                    "Copiar textos sem ler para entregar em trabalhos da escola.",
+                    "Nunca usar, pois a IA foi feita apenas para aplicar golpes."
+                ],
+                correctAnswer: 1,
+                explanation: "A IA é uma aliada poderosa (para resumos, ideias, organização), mas pode inventar informações (alucinações). A revisão humana é essencial."
+            },
+            {
+                question: "Para que serve a 'Verificação em Duas Etapas' no WhatsApp e redes sociais?",
+                options: [
+                    "Para deixar o aplicativo mais rápido e economizar bateria.",
+                    "É uma senha extra (PIN) que impede golpistas de clonarem seu número em outro celular.",
+                    "Para permitir que duas pessoas usem a mesma conta ao mesmo tempo.",
+                    "Para impedir que o WhatsApp apague suas fotos antigas."
+                ],
+                correctAnswer: 1,
+                explanation: "A verificação em duas etapas cria uma barreira extra. Mesmo se o golpista conseguir seu código SMS, ele não saberá sua senha (PIN)."
+            },
+            {
+                question: "Você vai fazer uma compra em uma loja virtual desconhecida. Como verificar se é seguro?",
+                options: [
+                    "Verificar se o endereço do site tem um cadeado e começa com 'https://'.",
+                    "Comprar de olhos fechados se o preço estiver muito barato.",
+                    "Acreditar na loja só porque viu a propaganda no Instagram.",
+                    "Mandar seus dados de cartão de crédito por email para a loja."
+                ],
+                correctAnswer: 0,
+                explanation: "Sites seguros de e-commerce usam conexão criptografada (HTTPS e o símbolo do cadeado). Desconfie de promoções boas demais para ser verdade."
+            },
+            {
+                question: "Você recebe um áudio no WhatsApp com a voz perfeita de um político falando algo criminoso ou absurdo. O que pode ser?",
+                options: [
+                    "É verdade absoluta, pois não tem como falsificar voz.",
+                    "Pode ser um 'Deepfake' gerado por Inteligência Artificial para enganar as pessoas.",
+                    "Apenas um defeito no microfone da pessoa.",
+                    "Um áudio gravado em estúdio que não afeta ninguém."
+                ],
+                correctAnswer: 1,
+                explanation: "Com a IA, já é possível clonar vozes e vídeos de qualquer pessoa (Deepfake). Nunca confie apenas em um áudio solto no WhatsApp sem checar nas notícias."
+            },
+            {
+                question: "Você vai fazer uma viagem em família e ficará 10 dias com a casa vazia. Como postar nas redes sociais de forma segura?",
+                options: [
+                    "Postar fotos no aeroporto dizendo 'Tchau, casa vazia por 10 dias!'.",
+                    "Marcar a localização exata do hotel em modo público para todos verem.",
+                    "Postar as fotos apenas quando voltar de viagem ou garantir que seu perfil seja restrito só para amigos.",
+                    "Publicar fotos mostrando as chaves de casa e do carro."
+                ],
+                correctAnswer: 2,
+                explanation: "A superexposição online facilita o trabalho de criminosos que monitoram perfis para saber quando as casas estão vazias. Poste com moderação e privacidade."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let currentPlayer = "";
+
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const rankingScreen = document.getElementById('ranking-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const nextBtn = document.getElementById('next-btn');
+
+        document.getElementById('total-questions').innerText = questions.length;
+        document.getElementById('final-total').innerText = questions.length;
+
+        function startQuiz() {
+            const nameInput = document.getElementById('player-name').value.trim();
+            if (!nameInput) {
+                alert("Por favor, digite seu nome para participar!");
+                return;
+            }
+            
+            currentPlayer = nameInput;
+            startScreen.classList.remove('active');
+            quizScreen.classList.add('active');
+            currentQuestionIndex = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            nextBtn.style.display = 'none';
+            feedbackContainer.classList.remove('active', 'success', 'error');
+            optionsContainer.innerHTML = '';
+            
+            const currentQ = questions[currentQuestionIndex];
+            document.getElementById('current-question').innerText = currentQuestionIndex + 1;
+            questionText.innerText = currentQ.question;
+
+            currentQ.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.innerText = option;
+                button.onclick = () => selectOption(index, button);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectOption(selectedIndex, selectedButton) {
+            const currentQ = questions[currentQuestionIndex];
+            const isCorrect = selectedIndex === currentQ.correctAnswer;
+            const allButtons = optionsContainer.querySelectorAll('.option-btn');
+
+            allButtons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === currentQ.correctAnswer) btn.classList.add('correct');
+            });
+
+            feedbackContainer.classList.add('active');
+            document.getElementById('feedback-text').innerText = currentQ.explanation;
+
+            if (isCorrect) {
+                selectedButton.classList.add('correct');
+                feedbackContainer.className = 'feedback-box active success';
+                document.getElementById('feedback-title').innerText = "🎉 Resposta Correta!";
+                score++;
+            } else {
+                selectedButton.classList.add('wrong');
+                feedbackContainer.className = 'feedback-box active error';
+                document.getElementById('feedback-title').innerText = "❌ Resposta Incorreta!";
+            }
+
+            nextBtn.style.display = 'block';
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtn.innerText = "Finalizar e Salvar Pontuação";
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                saveScore();
+                showResult();
+            }
+        }
+
+        function saveScore() {
+            let ranking = JSON.parse(localStorage.getItem('quizTechRanking')) || [];
+            ranking.push({ name: currentPlayer, score: score });
+            ranking.sort((a, b) => b.score - a.score);
+            localStorage.setItem('quizTechRanking', JSON.stringify(ranking));
+        }
+
+        function showResult() {
+            quizScreen.classList.remove('active');
+            resultScreen.classList.add('active');
+            
+            document.getElementById('display-player-name').innerText = currentPlayer;
+            document.getElementById('score').innerText = score;
+            
+            const msgElement = document.getElementById('score-message');
+            if (score === questions.length) msgElement.innerText = "Gabaritou! Especialista em Segurança Digital!";
+            else if (score >= questions.length / 2) msgElement.innerText = "Muito bom! Mas fique atento aos detalhes da internet.";
+            else msgElement.innerText = "Atenção! Revise os cuidados básicos de segurança.";
+        }
+
+        function showRankingScreen() {
+            startScreen.classList.remove('active');
+            resultScreen.classList.remove('active');
+            rankingScreen.classList.add('active');
+            
+            const rankingList = document.getElementById('ranking-list-container');
+            rankingList.innerHTML = '';
+            
+            let ranking = JSON.parse(localStorage.getItem('quizTechRanking')) || [];
+            
+            if (ranking.length === 0) {
+                rankingList.innerHTML = '<li style="text-align:center; color:#64748b;">Ninguém jogou ainda. Seja o primeiro!</li>';
+                return;
+            }
+
+            ranking.forEach((player, index) => {
+                const li = document.createElement('li');
+                li.className = 'ranking-item';
+                
+                let medal = `${index + 1}º `;
+                if (index === 0) medal = '🥇 ';
+                if (index === 1) medal = '🥈 ';
+                if (index === 2) medal = '🥉 ';
+
+                li.innerHTML = `
+                    <span class="rank-name">${medal} ${player.name}</span>
+                    <span class="rank-score">${player.score}/${questions.length} pts</span>
+                `;
+                rankingList.appendChild(li);
+            });
+        }
+
+        function clearRanking() {
+            // A SENHA PARA LIMPAR O RANKING ESTÁ AQUI: "admin"
+            const senha = prompt("Atenção (Área Restrita): Digite a senha para limpar o ranking:");
+            
+            if (senha === "admin") {
+                if (confirm("Você tem certeza que deseja apagar permanentemente todas as notas da turma?")) {
+                    localStorage.removeItem('quizTechRanking');
+                    showRankingScreen();
+                    alert("Ranking limpo com sucesso!");
+                }
+            } else if (senha !== null) {
+                alert("Senha incorreta. Ação bloqueada.");
+            }
+        }
+
+        function restartQuiz() {
+            document.getElementById('player-name').value = '';
+            rankingScreen.classList.remove('active');
+            resultScreen.classList.remove('active');
+            startScreen.classList.add('active');
+        }
+    </script>
+</body>
+</html>
