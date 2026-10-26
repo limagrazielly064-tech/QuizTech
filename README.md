@@ -1,2 +1,0 @@
-# QuizTech
-Uninassau Apiext
